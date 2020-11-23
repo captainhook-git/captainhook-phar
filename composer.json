@@ -1,0 +1,44 @@
+{
+  "name": "captainhook/captainhook-phar",
+  "type": "composer-plugin",
+  "description": "PHP git hook manager",
+  "keywords": ["git", "hooks", "pre-commit", "pre-push", "commit-msg", "prepare-commit-msg", "post-merge"],
+  "homepage": "https://github.com/captainhookphp/captainhook",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Sebastian Feldmann",
+      "email": "sf@sebastian-feldmann.info"
+    }
+  ],
+  "support": {
+    "issues": "https://github.com/captainhookphp/captainhook/issues"
+  },
+  "funding": [
+    {
+      "type": "github",
+      "url": "https://github.com/sponsors/sebastianfeldmann"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "CaptainHook\\Composer\\": "src/"
+    }
+  },
+  "require": {
+    "php": "^7.3 || ~8.0.0",
+    "ext-json": "*",
+    "ext-spl": "*",
+    "composer-plugin-api": "^1.1||^2.0",
+    "phar-io/composer-distributor": "^0.3"
+  },
+  "require-dev": {
+    "composer/composer": "^1.1 || ^2.0"
+  },
+  "extra": {
+    "class": "CaptainHook\\Composer\\Plugin"
+  },
+  "config": {
+    "sort-packages": true
+  }
+}

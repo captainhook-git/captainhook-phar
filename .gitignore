@@ -1,0 +1,31 @@
+# Ignore PHPStorm project files
+.idea
+
+# Ignore MacOS cache files
+.DS_STORE
+
+# Ignore PHPUnit result cache
+.phpunit.result.cache
+
+# Ignore PHPCS result cache
+.cs-check.json
+
+# Ignore phive home directory and installed tools
+.phive
+tools/box
+tools/phpcs
+tools/phpunit
+tools/phpstan
+
+# Ignore composer libs
+/vendor/
+/composer.lock
+
+# Ignore local dev configuration
+/captainhook.json
+
+# Ignore the build directory
+/build/coverage
+/build/logs
+/build/phar
+*.phar
