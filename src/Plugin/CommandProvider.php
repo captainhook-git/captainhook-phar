@@ -27,7 +27,7 @@ use CaptainHook\Composer\Command\Install;
  */
 class CommandProvider implements CapabilityCommandProvider
 {
-    public function getCommands()
+    public function getCommands(): array
     {
         return [
             new Configure(),

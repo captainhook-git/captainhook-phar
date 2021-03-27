@@ -15,6 +15,7 @@ namespace CaptainHook\Composer;
 
 use Composer\Composer;
 use Composer\IO\IOInterface;
+use Composer\Plugin\Capable;
 use PharIo\ComposerDistributor\ConfiguredMediator;
 
 /**
@@ -25,7 +26,7 @@ use PharIo\ComposerDistributor\ConfiguredMediator;
  * @link    https://github.com/captainhookphp/captainhook
  * @since   Class available since Release 6.0.0
  */
-class Plugin extends ConfiguredMediator
+class Plugin extends ConfiguredMediator implements Capable
 {
     public function getCapabilities()
     {
