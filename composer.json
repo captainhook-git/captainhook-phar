@@ -30,7 +30,7 @@
     "ext-json": "*",
     "ext-spl": "*",
     "composer-plugin-api": "^1.1||^2.0",
-    "phar-io/composer-distributor": "^0.3"
+    "phar-io/composer-distributor": "^1.0"
   },
   "require-dev": {
     "composer/composer": "^1.1 || ^2.0"
