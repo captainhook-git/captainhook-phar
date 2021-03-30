@@ -76,7 +76,7 @@ class Plugin extends ConfiguredMediator
      */
     public function installHooks(): void
     {
-        $this->getIO()->write('<info>CaptainHook Composer Plugin</info>');
+        $this->getIO()->write('<info>CaptainHook</info>');
 
         if ($this->isPluginDisabled()) {
             $this->getIO()->write('  <comment>plugin is disabled</comment>');
@@ -114,13 +114,17 @@ class Plugin extends ConfiguredMediator
      */
     private function configure(): void
     {
+        $this->getIO()->write('  - Detect configuration: ', false);
         if (file_exists($this->configuration)) {
-            $this->getIO()->write(('  <comment>Using CaptainHook config: ' . $this->configuration . '</comment>'));
+            $this->getIO()->write('<comment>found ' . $this->configuration . '</comment>');
             return;
         }
 
+        $this->getIO()->write('<comment>no configuration found</comment>');
+
         $runner = new Captain($this->executable, $this->configuration, $this->gitDirectory);
         $runner->execute(Captain::COMMAND_CONFIGURE, $this->getIO());
+
     }
 
     /**
@@ -128,8 +132,10 @@ class Plugin extends ConfiguredMediator
      */
     private function install(): void
     {
+        $this->getIO()->write('  - Install hooks: ', false);
         $runner = new Captain($this->executable, $this->configuration, $this->gitDirectory);
         $runner->execute(Captain::COMMAND_INSTALL, $this->getIO());
+        $this->getIO()->write(('<comment> done</comment>'));
     }
 
     /**
