@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace CaptainHook\Composer;
 
 use Composer\Installer\PackageEvent;
-use Composer\Script\Event;
+use Composer\Script\ScriptEvents;
 use PharIo\ComposerDistributor\ConfiguredMediator;
 use RuntimeException;
 
@@ -49,9 +49,30 @@ class Plugin extends ConfiguredMediator
      */
     private $executable;
 
+    /**
+     * Flag to determine to install Captain Hook after a package update or install
+     *
+     * @var bool
+     */
+    private $isPackageUpdate = false;
+
     protected function getDistributorConfig(): string
     {
         return __DIR__ . '/../distributor.xml';
+    }
+
+    public static function getSubscribedEvents()
+    {
+        $existingEvents = parent::getSubscribedEvents();
+
+        return array_merge_recursive(
+            $existingEvents,
+            [
+                ScriptEvents::POST_AUTOLOAD_DUMP => [
+                    ['installHooksAfterPackageUpdate', 0]
+                ]
+            ]
+        );
     }
 
     /**
@@ -65,17 +86,18 @@ class Plugin extends ConfiguredMediator
         // download phar and check signature
         parent::installOrUpdateFunction($event);
         // try to configure and install hooks
-        $this->installHooks();
+        $this->configureHooks();
     }
 
     /**
-     * Run the installer
+     * Configure the installer
      *
      * @return void
      * @throws \Exception
      */
-    public function installHooks(): void
+    public function configureHooks(): void
     {
+        $this->isPackageUpdate = true;
         $this->getIO()->write('<info>CaptainHook</info>');
 
         if ($this->isPluginDisabled()) {
@@ -106,8 +128,22 @@ class Plugin extends ConfiguredMediator
         }
 
         $this->configure();
-        $this->install();
     }
+
+    /**
+     * Install hooks to your .git/hooks directory
+     */
+    public function installHooksAfterPackageUpdate(): void
+    {
+        if (!$this->isPackageUpdate) {
+            return;
+        }
+        $this->getIO()->write('  - Install hooks: ', false);
+        $runner = new Captain($this->executable, $this->configuration, $this->gitDirectory);
+        $runner->execute(Captain::COMMAND_INSTALL, $this->getIO());
+        $this->getIO()->write(('<comment> done</comment>'));
+    }
+
 
     /**
      * Create captainhook.json file if it does not exist
@@ -124,18 +160,6 @@ class Plugin extends ConfiguredMediator
 
         $runner = new Captain($this->executable, $this->configuration, $this->gitDirectory);
         $runner->execute(Captain::COMMAND_CONFIGURE, $this->getIO());
-
-    }
-
-    /**
-     * Install hooks to your .git/hooks directory
-     */
-    private function install(): void
-    {
-        $this->getIO()->write('  - Install hooks: ', false);
-        $runner = new Captain($this->executable, $this->configuration, $this->gitDirectory);
-        $runner->execute(Captain::COMMAND_INSTALL, $this->getIO());
-        $this->getIO()->write(('<comment> done</comment>'));
     }
 
     /**
