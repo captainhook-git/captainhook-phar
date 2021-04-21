@@ -2,7 +2,7 @@
 <distributor xmlns="https://phar.io/composer-distributor"
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xsi:schemaLocation="https://phar.io/xml/distributor/1.0/schema.xsd"
-             packageName="captainhook/captainhook"
+             packageName="captainhook/captainhook-phar"
              keyDirectory="keys">
 
   <phar name="captainhook"
