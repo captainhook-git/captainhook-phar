@@ -83,6 +83,14 @@ class Plugin extends ConfiguredMediator
      */
     public function installOrUpdateFunction(PackageEvent $event): void
     {
+        if ($this->isPluginDisabled()) {
+            $this->getIO()->write('  <comment>plugin is disabled</comment>');
+            return;
+        }
+        if (getenv('CI') === 'true') {
+            $this->getIO()->write(' <comment>disabling plugin due to CI-environment</comment>');
+            return;
+        }
         // download phar and check signature
         parent::installOrUpdateFunction($event);
         // try to configure and install hooks
@@ -99,16 +107,6 @@ class Plugin extends ConfiguredMediator
     {
         $this->isPackageUpdate = true;
         $this->getIO()->write('<info>CaptainHook</info>');
-
-        if ($this->isPluginDisabled()) {
-            $this->getIO()->write('  <comment>plugin is disabled</comment>');
-            return;
-        }
-
-        if (getenv('CI') === 'true') {
-            $this->getIO()->write(' <comment>disabling plugin due to CI-environment</comment>');
-            return;
-        }
 
         $this->detectConfiguration();
         $this->detectGitDir();
@@ -218,11 +216,11 @@ class Plugin extends ConfiguredMediator
     {
         $extra = $this->getComposer()->getPackage()->getExtra();
         if (isset($extra['captainhook']['exec'])) {
-            $this->executable = $extra['captainhook']['exec'];
+            $this->executable = (string) $extra['captainhook']['exec'];
             return;
         }
 
-        $this->executable = (string) $this->getComposer()->getConfig()->get('bin-dir') . '/captainhook';
+        $this->executable = $this->getComposer()->getConfig()->get('bin-dir') . '/captainhook';
     }
 
     /**
