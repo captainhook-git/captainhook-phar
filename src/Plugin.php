@@ -24,7 +24,7 @@ use RuntimeException;
  * @package CaptainHook
  * @author  Sebastian Feldmann <sf@sebastian-feldmann.info>
  * @link    https://github.com/captainhookphp/captainhook
- * @since   Class available since Release 6.0.0
+ * @since   Class available since Release 5.10.0
  */
 class Plugin extends ConfiguredMediator
 {
@@ -36,16 +36,16 @@ class Plugin extends ConfiguredMediator
     private $configuration;
 
     /**
-     * Detected git directory
+     * Detected dotGit file or directory
      *
-     * @var string
+     * @var \CaptainHook\Composer\DotGit
      */
-    private $gitDirectory;
+    private $dotGit;
 
     /**
      * Detected CaptainHook executable
      *
-     * @var mixed
+     * @var string
      */
     private $executable;
 
@@ -56,11 +56,21 @@ class Plugin extends ConfiguredMediator
      */
     private $isPackageUpdate = false;
 
+    /**
+     * Return the path to the captainhook distributor configuration file
+     *
+     * @return string
+     */
     protected function getDistributorConfig(): string
     {
         return __DIR__ . '/../distributor.xml';
     }
 
+    /**
+     * Return a list af all supported events and their actions
+     *
+     * @return array
+     */
     public static function getSubscribedEvents()
     {
         $existingEvents = parent::getSubscribedEvents();
@@ -76,7 +86,7 @@ class Plugin extends ConfiguredMediator
     }
 
     /**
-     * On install of update install hooks
+     * On install or update install hooks
      *
      * @param  \Composer\Installer\PackageEvent $event
      * @throws \Exception
@@ -87,8 +97,12 @@ class Plugin extends ConfiguredMediator
             $this->getIO()->write('  <comment>plugin is disabled</comment>');
             return;
         }
-        if (getenv('CI') === 'true') {
-            $this->getIO()->write(' <comment>disabling plugin due to CI-environment</comment>');
+        if ($this->isRunningOnCI()) {
+            $this->getIO()->write('  <comment>disabling plugin due to CI-environment</comment>');
+            return;
+        }
+        if ($this->isAdditionalWorktree()) {
+            $this->getIO()->write('  <comment>no need to install hooks in additional worktree</comment>');
             return;
         }
         // download phar and check signature
@@ -109,7 +123,6 @@ class Plugin extends ConfiguredMediator
         $this->getIO()->write('<info>CaptainHook</info>');
 
         $this->detectConfiguration();
-        $this->detectGitDir();
         $this->detectCaptainExecutable();
 
         if (!file_exists($this->executable)) {
@@ -137,11 +150,10 @@ class Plugin extends ConfiguredMediator
             return;
         }
         $this->getIO()->write('  - Install hooks: ', false);
-        $runner = new Captain($this->executable, $this->configuration, $this->gitDirectory);
+        $runner = new Captain($this->executable, $this->configuration, $this->dotGit->gitDirectory());
         $runner->execute(Captain::COMMAND_INSTALL, $this->getIO());
         $this->getIO()->write(('<comment> done</comment>'));
     }
-
 
     /**
      * Create captainhook.json file if it does not exist
@@ -156,12 +168,12 @@ class Plugin extends ConfiguredMediator
 
         $this->getIO()->write('<comment>no configuration found</comment>');
 
-        $runner = new Captain($this->executable, $this->configuration, $this->gitDirectory);
+        $runner = new Captain($this->executable, $this->configuration, $this->dotGit->gitDirectory());
         $runner->execute(Captain::COMMAND_CONFIGURE, $this->getIO());
     }
 
     /**
-     * Return path to the CaptainHook configuration file
+     * Set the path to the CaptainHook configuration file
      *
      * @return void
      */
@@ -173,44 +185,23 @@ class Plugin extends ConfiguredMediator
 
     /**
      * Search for the git repository to store the hooks in
-
+     *
      * @return void
      * @throws \RuntimeException
      */
     private function detectGitDir(): void
     {
-        $path = getcwd();
-
-        while (file_exists($path)) {
-            $possibleGitDir = $path . '/.git';
-            if (is_dir($possibleGitDir)) {
-                $this->gitDirectory = $possibleGitDir;
-                return;
-            }
-
-            // if we checked the root directory already, break to prevent endless loop
-            if ($path === dirname($path)) {
-                break;
-            }
-
-            $path = dirname($path);
+        try {
+            $this->dotGit = DotGit::searchInPath(getcwd());
+        } catch (RuntimeException $e) {
+            throw new RuntimeException($this->pluginErrorMessage($e->getMessage()));
         }
-        throw new RuntimeException($this->pluginErrorMessage('git directory not found'));
     }
 
     /**
-     * Creates a nice formatted error message
+     * Detects the captainhook binary
      *
-     * @param  string $reason
-     * @return string
-     */
-    private function pluginErrorMessage(string $reason): string
-    {
-        return 'Shiver me timbers! CaptainHook could not install yer git hooks! (' . $reason . ')';
-    }
-
-    /**
-     *
+     * @return void
      */
     private function detectCaptainExecutable(): void
     {
@@ -232,5 +223,37 @@ class Plugin extends ConfiguredMediator
     {
         $extra = $this->getComposer()->getPackage()->getExtra();
         return (bool) ($extra['captainhook']['disable-plugin'] ?? false);
+    }
+
+    /**
+     * Checks if this is a continuous integration (CI) run
+     *
+     * @return bool
+     */
+    private function isRunningOnCI(): bool
+    {
+        return getenv('CI') === 'true';
+    }
+
+    /**
+     * Make sure we are not running inside an additional worktree
+     *
+     * @return bool
+     */
+    private function isAdditionalWorktree(): bool
+    {
+        $this->detectGitDir();
+        return $this->dotGit->isAdditionalWorktree();
+    }
+
+    /**
+     * Creates a nice formatted error message
+     *
+     * @param  string $reason
+     * @return string
+     */
+    private function pluginErrorMessage(string $reason): string
+    {
+        return 'Shiver me timbers! CaptainHook could not install yer git hooks! (' . $reason . ')';
     }
 }
