@@ -7,5 +7,10 @@
     "ext-json": "*",
     "ext-spl": "*",
     "captainhook/captainhook-phar": "*"
+  },
+  "config": {
+    "allow-plugins": {
+      "captainhook/captainhook-phar": true
+    }
   }
 }
