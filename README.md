@@ -1,7 +1,7 @@
 # CaptainHook as PHAR file
 
 [![Latest Stable Version](https://poser.pugx.org/captainhook/captainhook-phar/v/stable.svg?v=1)](https://packagist.org/packages/captainhook/captainhook)
-[![PHP Version Require](http://poser.pugx.org/captainhook/captainhook/require/php)](https://packagist.org/packages/captainhook/captainhook)
+[![PHP Version Require](https://poser.pugx.org/captainhook/captainhook/require/php)](https://packagist.org/packages/captainhook/captainhook)
 [![Downloads](https://poser.pugx.org/captainhook/captainhook-phar/downloads)](https://packagist.org/packages/captainhook/captainhook)
 [![License](https://poser.pugx.org/captainhook/captainhook/license.svg?v=1)](https://packagist.org/packages/captainhook/captainhook)
 [![Code Coverage](https://scrutinizer-ci.com/g/captainhookphp/captainhook/badges/coverage.png?b=main&v=1)](https://scrutinizer-ci.com/g/captainhookphp/captainhook/?branch=master)
