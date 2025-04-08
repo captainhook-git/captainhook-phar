@@ -4,7 +4,7 @@
 [![PHP Version Require](https://poser.pugx.org/captainhook/captainhook/require/php)](https://packagist.org/packages/captainhook/captainhook)
 [![Downloads](https://poser.pugx.org/captainhook/captainhook-phar/downloads)](https://packagist.org/packages/captainhook/captainhook)
 [![License](https://poser.pugx.org/captainhook/captainhook/license.svg?v=1)](https://packagist.org/packages/captainhook/captainhook)
-[![Code Coverage](https://scrutinizer-ci.com/g/captainhookphp/captainhook/badges/coverage.png?b=main&v=1)](https://scrutinizer-ci.com/g/captainhookphp/captainhook/?branch=master)
+[![Code Coverage](https://scrutinizer-ci.com/g/captainhook-git/captainhook/badges/coverage.png?b=main&v=1)](https://scrutinizer-ci.com/g/captainhook-git/captainhook/?branch=master)
 [![X](https://img.shields.io/badge/X-%40captainhookphp-black.svg)](https://twitter.com/intent/user?screen_name=captainhookphp)
 [![Mastodon](https://img.shields.io/badge/Mastodon-%40captainhook-purple.svg)](https://phpc.social/@captainhook)
 

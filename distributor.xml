@@ -6,7 +6,7 @@
              keyDirectory="keys">
 
   <phar name="captainhook"
-        file="https://github.com/captainhookphp/captainhook/releases/download/{{version}}/captainhook.phar"
-        signature="https://github.com/captainhookphp/captainhook/releases/download/{{version}}/captainhook.phar.asc"/>
+        file="https://github.com/captainhook-git/captainhook/releases/download/{{version}}/captainhook.phar"
+        signature="https://github.com/captainhook-git/captainhook/releases/download/{{version}}/captainhook.phar.asc"/>
 
 </distributor>

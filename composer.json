@@ -3,7 +3,7 @@
   "type": "composer-plugin",
   "description": "PHP git hook manager",
   "keywords": ["git", "hooks", "pre-commit", "pre-push", "commit-msg", "prepare-commit-msg", "post-merge"],
-  "homepage": "https://github.com/captainhookphp/captainhook",
+  "homepage": "https://github.com/captainhook-git/captainhook",
   "license": "MIT",
   "authors": [
     {
@@ -12,7 +12,7 @@
     }
   ],
   "support": {
-    "issues": "https://github.com/captainhookphp/captainhook/issues"
+    "issues": "https://github.com/captainhook-git/captainhook/issues"
   },
   "funding": [
     {
